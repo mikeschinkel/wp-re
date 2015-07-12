@@ -2,6 +2,8 @@
 /**
  * WordPress environment setup class.
  *
+ * @mixin WP_Modules
+ *
  * @package WordPress
  * @since 2.0.0
  */
@@ -620,6 +622,32 @@ class WP {
 		 * @param WP &$this Current WordPress environment instance (passed by reference).
 		 */
 		do_action_ref_array( 'wp', array( &$this ) );
+	}
+
+	/**
+	 * Register a "helper" method for this the WP class, or another class.
+	 *
+	 * @param string $helper_class
+	 * @param string $class_to_help
+	 */
+	public static function register_helper( $helper_class, $class_to_help = 'WP' ) {
+
+		WP_Helper::_register_helper( $helper_class, $class_to_help );
+
+	}
+
+	/**
+	 * Magic method that checks for "helper" methods when static calls are made.
+	 *
+	 * @param string $helper_method
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public static function __callStatic( $helper_method, $args ) {
+
+		return WP_Helper::_call_helper( get_called_class(), $helper_method, $args );
+
 	}
 
 }

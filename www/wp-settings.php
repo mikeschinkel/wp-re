@@ -71,6 +71,9 @@ wp_set_lang_dir();
 require( ABSPATH . WPINC . '/compat.php' );
 require( ABSPATH . WPINC . '/functions.php' );
 require( ABSPATH . WPINC . '/class-wp.php' );
+require( ABSPATH . WPINC . '/class-wp-helper.php' );
+require( ABSPATH . WPINC . '/class-wp-modules.php' );
+require( ABSPATH . WPINC . '/class-wp-module.php' );
 require( ABSPATH . WPINC . '/class-wp-error.php' );
 require( ABSPATH . WPINC . '/plugin.php' );
 require( ABSPATH . WPINC . '/pomo/mo.php' );
@@ -85,8 +88,21 @@ wp_set_wpdb_vars();
 // Start the WordPress object cache, or an external object cache if the drop-in is present.
 wp_start_object_cache();
 
+/**
+ * Load drop-in, if exists to allow filter to be added to remove core modules
+ */
+if ( is_file( WP_CONTENT_DIR . '/modules.php' ) ) {
+	require( WP_CONTENT_DIR . '/modules.php' );
+}
+/**
+ * Load Active Core Modules
+ */
+WP::load_modules( 'core' );
+
+
 // Attach the default filters.
 require( ABSPATH . WPINC . '/default-filters.php' );
+
 
 // Initialize multisite if enabled.
 if ( is_multisite() ) {
@@ -167,27 +183,9 @@ wp_plugin_directory_constants();
 
 $GLOBALS['wp_plugin_paths'] = array();
 
-// Load must-use plugins.
-foreach ( wp_get_mu_plugins() as $mu_plugin ) {
-	include_once( $mu_plugin );
+if ( WP::is_module( 'mu-plugins', 'core' ) ) {
+	WP::load_mu_plugins();
 }
-unset( $mu_plugin );
-
-// Load network activated plugins.
-if ( is_multisite() ) {
-	foreach( wp_get_active_network_plugins() as $network_plugin ) {
-		wp_register_plugin_realpath( $network_plugin );
-		include_once( $network_plugin );
-	}
-	unset( $network_plugin );
-}
-
-/**
- * Fires once all must-use and network-activated plugins have loaded.
- *
- * @since 2.8.0
- */
-do_action( 'muplugins_loaded' );
 
 if ( is_multisite() )
 	ms_cookie_constants(  );

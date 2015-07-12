@@ -55,6 +55,10 @@ function wp_initial_constants() {
 	if ( !defined('WP_CONTENT_DIR') )
 		define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' ); // no trailing slash, full paths only - WP_CONTENT_URL is defined further down
 
+	if ( ! defined( 'WP_MODULES_DIR' ) )
+		define( 'WP_MODULES_DIR', ABSPATH . 'wp-modules' ); // no trailing slash, full paths only - WP_MODULES_URL is defined further down
+
+
 	// Add define('WP_DEBUG', true); to wp-config.php to enable display of notices during development.
 	if ( !defined('WP_DEBUG') )
 		define( 'WP_DEBUG', false );
@@ -99,6 +103,9 @@ function wp_initial_constants() {
 function wp_plugin_directory_constants() {
 	if ( !defined('WP_CONTENT_URL') )
 		define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content'); // full url - WP_CONTENT_DIR is defined further up
+
+	if ( !defined('WP_MODULES_URL') )
+		define( 'WP_MODULES_URL', get_option('siteurl') . '/wp-modules'); // full url - WP_MODULES_DIR is defined further up
 
 	/**
 	 * Allows for the plugins directory to be moved from the default location.
