@@ -183,8 +183,10 @@ wp_plugin_directory_constants();
 
 $GLOBALS['wp_plugin_paths'] = array();
 
-if ( WP::is_module( 'mu-plugins', 'core' ) ) {
+if ( WP::is_core_module( 'mu-plugins' ) ) {
+
 	WP::load_mu_plugins();
+
 }
 
 if ( is_multisite() )

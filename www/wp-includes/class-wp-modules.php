@@ -23,14 +23,42 @@ class WP_Modules {
 	}
 
 	/**
-	 * Return if a module is active modules for the given type
+	 * Return if a module is an active core module for the given type
 	 *
 	 * @param string $module_slug Directory name of module
-	 * @param string $module_type Type of module: 'core' or 'user'
 	 *
 	 * @return bool
 	 */
-	function is_module( $module_slug, $module_type = 'core' ) {
+	function is_core_module( $module_slug ) {
+
+		return $this->is_module( $module_slug, 'core' );
+
+	}
+
+	/**
+	 * Return if a module is an active core module for the given type
+	 *
+	 * @param string $module_slug Directory name of module
+	 *
+	 * @return bool
+	 */
+	function is_user_module( $module_slug ) {
+
+		return $this->is_module( $module_slug, 'user' );
+
+	}
+
+	/**
+	 * Return if a module is an active module for the given type
+	 *
+	 * @param string $module_slug Directory name of module
+	 * @param string $module_type Type of module: 'core' or 'user' or 'any'
+	 *
+	 * @return bool
+	 *
+	 * @todo implement $module_type => 'any'
+	 */
+	function is_module( $module_slug, $module_type = 'any' ) {
 
 		$modules = $this->get_modules( $module_type );
 
