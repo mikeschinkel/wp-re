@@ -20,7 +20,12 @@ class WP_Helper {
 	 */
 	static function _register_helper( $helper_class, $class_to_help  ) {
 
-		$methods = array_fill_keys( get_class_methods( $helper_class ), new $helper_class() );
+		$methods = array_fill_keys( array_filter( get_class_methods( $helper_class ),
+			function( $element ) {
+				return '__' !== substr( $element, 0, 2 );
+			} ),
+			new $helper_class()
+		);
 
 		unset( $methods[ 'on_load' ] );
 
@@ -46,19 +51,17 @@ class WP_Helper {
 	 */
 	static function _call_helper( $class_helped, $helper_method, $args ) {
 
-		if ( ! isset( self::$_helpers[ $class_helped ][ $helper_method ] ) ) {
+		if ( isset( self::$_helpers[ $class_helped ][ $helper_method ] ) ) {
+
+			return call_user_func_array( array( self::$_helpers[ $class_helped ][ $helper_method ], $helper_method ), $args );
+
+		} else {
 
 			$message = 'There is no helper method %s registered for class %s.';
 
 			trigger_error( sprintf( $message, $helper_method, $class_helped ), E_USER_ERROR );
 
 			return null;
-
-		} else {
-
-		    $instance = self::$_helpers[ $class_helped ][ $helper_method ];
-
-			return call_user_func_array( array( $instance, $helper_method ), $args );
 
 		}
 
