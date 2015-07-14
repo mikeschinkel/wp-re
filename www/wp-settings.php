@@ -203,8 +203,16 @@ require( ABSPATH . WPINC . '/vars.php' );
 
 // Make taxonomies and posts available to plugins and themes.
 // @plugin authors: warning: these get registered again on the init hook.
-create_initial_taxonomies();
-create_initial_post_types();
+if ( WP::is_core_module( 'taxonomies' ) ) {
+
+	WP::create_initial_taxonomies();
+
+}
+if ( WP::is_core_module( 'post-types' ) ) {
+
+	WP::create_initial_post_types();
+
+}
 
 // Register the default theme directory root
 register_theme_directory( get_theme_root() );

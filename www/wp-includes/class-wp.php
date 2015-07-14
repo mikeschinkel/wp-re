@@ -3,6 +3,10 @@
  * WordPress environment setup class.
  *
  * @mixin WP_Modules
+ * @mixin _WP_Comments
+ * @mixin _WP_MU_Plugins
+ * @mixin _WP_Post_Types
+ * @mixin _WP_Taxonomies
  *
  * @package WordPress
  * @since 2.0.0

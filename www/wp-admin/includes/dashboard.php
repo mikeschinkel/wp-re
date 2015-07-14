@@ -215,38 +215,17 @@ function wp_dashboard_right_now() {
 	<ul>
 	<?php
 	// Posts and Pages
-	foreach ( array( 'post', 'page' ) as $post_type ) {
-		$num_posts = wp_count_posts( $post_type );
-		if ( $num_posts && $num_posts->publish ) {
-			if ( 'post' == $post_type ) {
-				$text = _n( '%s Post', '%s Posts', $num_posts->publish );
-			} else {
-				$text = _n( '%s Page', '%s Pages', $num_posts->publish );
-			}
-			$text = sprintf( $text, number_format_i18n( $num_posts->publish ) );
-			$post_type_object = get_post_type_object( $post_type );
-			if ( $post_type_object && current_user_can( $post_type_object->cap->edit_posts ) ) {
-				printf( '<li class="%1$s-count"><a href="edit.php?post_type=%1$s">%2$s</a></li>', $post_type, $text );
-			} else {
-				printf( '<li class="%1$s-count"><span>%2$s</span></li>', $post_type, $text );
-			}
 
-		}
+	if ( WP::is_core_module( 'post-types' ) ) {
+
+		WP::the_post_types_dashboard_right_now();
+
 	}
-	// Comments
-	$num_comm = wp_count_comments();
-	if ( $num_comm && $num_comm->approved ) {
-		$text = sprintf( _n( '%s Comment', '%s Comments', $num_comm->approved ), number_format_i18n( $num_comm->approved ) );
-		?>
-		<li class="comment-count"><a href="edit-comments.php"><?php echo $text; ?></a></li>
-		<?php
-		if ( $num_comm->moderated ) {
-			/* translators: Number of comments in moderation */
-			$text = sprintf( _nx( '%s in moderation', '%s in moderation', $num_comm->moderated, 'comments' ), number_format_i18n( $num_comm->moderated ) );
-			?>
-			<li class="comment-mod-count"><a href="edit-comments.php?comment_status=moderated"><?php echo $text; ?></a></li>
-			<?php
-		}
+
+	if ( WP::is_core_module( 'comments' ) ) {
+
+		WP::the_comments_dashboard_right_now();
+
 	}
 
 	/**
@@ -637,22 +616,20 @@ function wp_dashboard_site_activity() {
 
 	echo '<div id="activity-widget">';
 
-	$future_posts = wp_dashboard_recent_posts( array(
-		'max'     => 5,
-		'status'  => 'future',
-		'order'   => 'ASC',
-		'title'   => __( 'Publishing Soon' ),
-		'id'      => 'future-posts',
-	) );
-	$recent_posts = wp_dashboard_recent_posts( array(
-		'max'     => 5,
-		'status'  => 'publish',
-		'order'   => 'DESC',
-		'title'   => __( 'Recently Published' ),
-		'id'      => 'published-posts',
-	) );
+	if ( ! WP::is_core_module( 'post-types' ) ) {
 
-	$recent_comments = wp_dashboard_recent_comments();
+		$future_posts = $recent_posts = false;
+
+	} else {
+
+		$future_posts = WP::future_dashboard_posts();
+		$recent_posts = WP::recent_dashboard_posts();
+
+	}
+
+	$recent_comments = WP::is_core_module( 'comments' )
+		? WP::recent_dashboard_comments()
+		: false;
 
 	if ( !$future_posts && !$recent_posts && !$recent_comments ) {
 		echo '<div class="no-activity">';

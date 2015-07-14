@@ -341,7 +341,6 @@ add_action( 'update_option_gmt_offset', 'delete_get_calendar_cache' );
 add_action( 'transition_post_status', '__clear_multi_author_cache' );
 
 // Post
-add_action( 'init', 'create_initial_post_types', 0 ); // highest priority
 add_action( 'admin_menu', '_add_post_type_submenus' );
 add_action( 'before_delete_post', '_reset_front_page_settings_for_post' );
 add_action( 'wp_trash_post',      '_reset_front_page_settings_for_post' );
@@ -364,9 +363,6 @@ add_filter( 'print_scripts_array', 'wp_prototype_before_jquery' );
 
 add_action( 'wp_default_styles', 'wp_default_styles' );
 add_filter( 'style_loader_src', 'wp_style_loader_src', 10, 2 );
-
-// Taxonomy
-add_action( 'init', 'create_initial_taxonomies', 0 ); // highest priority
 
 // Canonical
 add_action( 'template_redirect', 'redirect_canonical' );

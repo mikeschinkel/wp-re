@@ -24,7 +24,7 @@ class WP_Helper {
 			function( $element ) {
 				return '__' !== substr( $element, 0, 2 );
 			} ),
-			new $helper_class()
+			$helper = new $helper_class()
 		);
 
 		unset( $methods[ 'on_load' ] );
@@ -36,6 +36,12 @@ class WP_Helper {
 		} else {
 
 			self::$_helpers[ $class_to_help ] += $methods;
+
+		}
+
+		if ( method_exists( $helper, 'on_register' ) ) {
+
+			$helper->on_register();
 
 		}
 

@@ -22,7 +22,7 @@ class _WP_MU_Plugins extends WP_Module {
 		/**
 		 * Load must-use plugins.
 		 */
-		foreach ( wp_get_mu_plugins() as $mu_plugin ) {
+		foreach ( self::get_mu_plugins() as $mu_plugin ) {
 
 			include_once( $mu_plugin );
 
@@ -49,9 +49,23 @@ class _WP_MU_Plugins extends WP_Module {
 		 * @since 2.8.0
 		 */
 		do_action( 'muplugins_loaded' );
+    }
 
-	}
+    static function get_mu_plugins() {
+        $mu_plugins = array();
+        if ( !is_dir( WPMU_PLUGIN_DIR ) )
+            return $mu_plugins;
+        if ( ! $dh = opendir( WPMU_PLUGIN_DIR ) )
+            return $mu_plugins;
+        while ( ( $plugin = readdir( $dh ) ) !== false ) {
+            if ( substr( $plugin, -4 ) == '.php' )
+                $mu_plugins[] = WPMU_PLUGIN_DIR . '/' . $plugin;
+        }
+        closedir( $dh );
+        sort( $mu_plugins );
 
+        return $mu_plugins;
+    }
 }
-_WP_MU_Plugins::on_load();
 
+_WP_MU_Plugins::on_load();
