@@ -9,15 +9,11 @@ class _WP_Post_Types extends WP_Module {
 
 		WP::register_helper( __CLASS__ );
 
-	}
-
-	function on_register() {
-
-		add_action( 'init', array( $this, 'create_initial_post_types' ), 0 ); // highest priority
+		add_action( 'init', array( __CLASS__, 'create_initial_post_types' ), 0 ); // highest priority
 
 	}
 
-	function add_post_types_admin_menu() {
+	static function add_post_types_admin_menu() {
 		global $menu, $submenu;
 		$menu[5]                = array(
 			__( 'Posts' ),
@@ -94,7 +90,7 @@ class _WP_Post_Types extends WP_Module {
 	 *
 	 * @since 2.9.0
 	 */
-	function create_initial_post_types() {
+	static function create_initial_post_types() {
 		register_post_type( 'post', array(
 			'labels'           => array(
 				'name_admin_bar' => _x( 'Post', 'add new on admin bar' ),
@@ -254,7 +250,10 @@ class _WP_Post_Types extends WP_Module {
 		) );
 	}
 
-	function the_post_types_dashboard_right_now() {
+	/**
+	 *
+	 */
+	static function the_post_types_dashboard_right_now() {
 
 		foreach ( array( 'post', 'page' ) as $post_type ) {
 			$num_posts = wp_count_posts( $post_type );
@@ -276,7 +275,10 @@ class _WP_Post_Types extends WP_Module {
 		}
 	}
 
-	function future_dashboard_posts() {
+	/**
+	 * @return bool
+	 */
+	static function future_dashboard_posts() {
 
 		return wp_dashboard_recent_posts( array(
 			'max'    => 5,
@@ -288,7 +290,10 @@ class _WP_Post_Types extends WP_Module {
 
 	}
 
-	function recent_dashboard_posts() {
+	/**
+	 * @return bool
+	 */
+	static function recent_dashboard_posts() {
 
 		return wp_dashboard_recent_posts( array(
 			'max'    => 5,

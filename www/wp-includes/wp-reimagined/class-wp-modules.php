@@ -8,7 +8,7 @@ class WP_Modules {
 	/**
 	 * @var null|array
 	 */
-	private $_modules;
+	private static $_modules;
 
 	/**
 	 * Run tasks required on load of this file.
@@ -29,9 +29,9 @@ class WP_Modules {
 	 *
 	 * @return bool
 	 */
-	function is_core_module( $module_slug ) {
+	static function is_core_module( $module_slug ) {
 
-		return $this->is_module( $module_slug, 'core' );
+		return self::is_module( $module_slug, 'core' );
 
 	}
 
@@ -42,9 +42,9 @@ class WP_Modules {
 	 *
 	 * @return bool
 	 */
-	function is_user_module( $module_slug ) {
+	static function is_user_module( $module_slug ) {
 
-		return $this->is_module( $module_slug, 'user' );
+		return self::is_module( $module_slug, 'user' );
 
 	}
 
@@ -58,9 +58,9 @@ class WP_Modules {
 	 *
 	 * @todo implement $module_type => 'any'
 	 */
-	function is_module( $module_slug, $module_type = 'any' ) {
+	static function is_module( $module_slug, $module_type = 'any' ) {
 
-		$modules = $this->get_modules( $module_type );
+		$modules = self::get_modules( $module_type );
 
 		return isset( $modules[ $module_slug ] );
 
@@ -73,29 +73,31 @@ class WP_Modules {
 	 *
 	 * @return array
 	 */
-	function get_modules( $module_type ) {
+	static function get_modules( $module_type ) {
 
-		do {
+		do {  // Do is used here like try{}catch, but only affects the current method. Better than nested IFs.
 
 			if ( ! preg_match( '#^(core|user)$#', $module_type ) ) {
 				/**
 				 * Return an empty array if not core or user modules
 				 * @todo Add plugin and theme modules later
 				 */
-				$this->_modules[ $module_type ] = array();
+				self::$_modules[ $module_type ] = array();
 				break;
 
 			}
 
-			if ( isset( $this->_modules[ $module_type ] ) ) {
-
+			if ( isset( self::$_modules[ $module_type ] ) ) {
+				/**
+				 * We already know the module. Break out.
+				 */
 				break;
 
 			}
 
 			$cache_key = "wp_{$module_type}_modules";
 
-			if ( $this->_modules[ $module_type ] = wp_cache_get( $cache_key ) ) {
+			if ( self::$_modules[ $module_type ] = wp_cache_get( $cache_key ) ) {
 
 				break;
 
@@ -103,11 +105,11 @@ class WP_Modules {
 
 			switch ( $module_type ) {
 				case 'core':
-					$this->_modules[ 'core' ] = $this->_scan_modules( WP_MODULES_DIR );
+					self::$_modules[ 'core' ] = self::_scan_modules( WP_MODULES_DIR );
 					break;
 
 				case 'user':
-					$this->_modules[ 'user' ] = $this->_scan_modules( WP_CONTENT_DIR . '/modules' );
+					self::$_modules[ 'user' ] = self::_scan_modules( WP_CONTENT_DIR . '/modules' );
 					break;
 
 			}
@@ -115,20 +117,20 @@ class WP_Modules {
 			/**
 			 * Allow modules to be removed.
 			 */
-			$this->_modules[ $module_type ] = apply_filters(
+			self::$_modules[ $module_type ] = apply_filters(
 				'active_modules',
-				$this->_modules[ $module_type ],
+				self::$_modules[ $module_type ],
 				$module_type
 			);
 
 			/**
 			 * Save it for improved performance with persistent caches
 			 */
-			wp_cache_set( $cache_key, $this->_modules[ $module_type ] );
+			wp_cache_set( $cache_key, self::$_modules[ $module_type ] );
 
 		} while ( false );
 
-		return $this->_modules[ $module_type ];
+		return self::$_modules[ $module_type ];
 
 	}
 
@@ -137,9 +139,9 @@ class WP_Modules {
 	 *
 	 * @param string $module_type Type of module: 'core' or 'user'
 	 */
-	function load_modules( $module_type ) {
+	static function load_modules( $module_type ) {
 
-		foreach ( $this->get_modules( $module_type ) as $module_file ) {
+		foreach ( self::get_modules( $module_type ) as $module_file ) {
 
 			require( $module_file );
 
@@ -157,7 +159,7 @@ class WP_Modules {
 	 *
 	 * @return array
 	 */
-	function _scan_modules( $dir ) {
+	static function _scan_modules( $dir ) {
 
 		$modules = array();
 

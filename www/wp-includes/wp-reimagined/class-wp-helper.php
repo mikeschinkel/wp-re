@@ -24,7 +24,7 @@ class WP_Helper {
 			function( $element ) {
 				return '__' !== substr( $element, 0, 2 );
 			} ),
-			$helper = new $helper_class()
+			(object)array( 'class_name' => $helper_class )
 		);
 
 		unset( $methods[ 'on_load' ] );
@@ -36,12 +36,6 @@ class WP_Helper {
 		} else {
 
 			self::$_helpers[ $class_to_help ] += $methods;
-
-		}
-
-		if ( method_exists( $helper, 'on_register' ) ) {
-
-			$helper->on_register();
 
 		}
 
@@ -59,7 +53,7 @@ class WP_Helper {
 
 		if ( isset( self::$_helpers[ $class_helped ][ $helper_method ] ) ) {
 
-			return call_user_func_array( array( self::$_helpers[ $class_helped ][ $helper_method ], $helper_method ), $args );
+			return call_user_func_array( array( self::$_helpers[ $class_helped ][ $helper_method ]->class_name, $helper_method ), $args );
 
 		} else {
 

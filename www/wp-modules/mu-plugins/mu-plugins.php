@@ -17,7 +17,7 @@ class _WP_MU_Plugins extends WP_Module {
 	/**
 	 * Load the Must User Plugins
 	 */
-	function load_mu_plugins() {
+	static function load_mu_plugins() {
 
 		/**
 		 * Load must-use plugins.

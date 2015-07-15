@@ -9,11 +9,7 @@ class _WP_Taxonomies extends WP_Module {
 
 		WP::register_helper( __CLASS__ );
 
-	}
-
-	function on_register() {
-
-		add_action( 'init', array( $this, 'create_initial_taxonomies' ), 0 ); // highest priority
+		add_action( 'init', array( __CLASS__, 'create_initial_taxonomies' ), 0 ); // highest priority
 
     }
 
@@ -24,7 +20,7 @@ class _WP_Taxonomies extends WP_Module {
      * backwards compatibility reasons), and again on the 'init' action. We must avoid
      * registering rewrite rules before the 'init' action.
      */
-    function create_initial_taxonomies() {
+    static function create_initial_taxonomies() {
         /**
          * @var WP_Rewrite $wp_rewrite
          */

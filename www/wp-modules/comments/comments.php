@@ -11,7 +11,7 @@ class _WP_Comments extends WP_Module {
 
 	}
 
-	function add_comments_admin_menu() {
+	static function add_comments_admin_menu() {
 		global $menu, $submenu;
 		$awaiting_mod = wp_count_comments();
 		$awaiting_mod = $awaiting_mod->moderated;
@@ -30,7 +30,7 @@ class _WP_Comments extends WP_Module {
 		$submenu['edit-comments.php'][0] = array( __( 'All Comments' ), 'edit_posts', 'edit-comments.php' );
 	}
 
-	function the_comments_dashboard_right_now() {
+	static function the_comments_dashboard_right_now() {
 
 		// Comments
 		$num_comm = wp_count_comments();
@@ -54,7 +54,7 @@ class _WP_Comments extends WP_Module {
 	/**
 	 * @return bool
 	 */
-	function recent_dashboard_comments() {
+	static function recent_dashboard_comments() {
 
 		return wp_dashboard_recent_comments();
 
