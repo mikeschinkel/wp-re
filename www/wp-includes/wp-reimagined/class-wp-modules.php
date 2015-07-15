@@ -42,9 +42,9 @@ class WP_Modules {
 	 *
 	 * @return bool
 	 */
-	static function is_user_module( $module_slug ) {
+	static function is_site_module( $module_slug ) {
 
-		return self::is_module( $module_slug, 'user' );
+		return self::is_module( $module_slug, 'site' );
 
 	}
 
@@ -52,7 +52,7 @@ class WP_Modules {
 	 * Return if a module is an active module for the given type
 	 *
 	 * @param string $module_slug Directory name of module
-	 * @param string $module_type Type of module: 'core' or 'user' or 'any'
+	 * @param string $module_type Type of module: 'core' or 'site' or 'any'
 	 *
 	 * @return bool
 	 *
@@ -69,7 +69,7 @@ class WP_Modules {
 	/**
 	 * Return the list of active modules for the given type
 	 *
-	 * @param string $module_type Type of module: 'core' or 'user'
+	 * @param string $module_type Type of module: 'core' or 'site'
 	 *
 	 * @return array
 	 */
@@ -77,9 +77,9 @@ class WP_Modules {
 
 		do {  // Do is used here like try{}catch, but only affects the current method. Better than nested IFs.
 
-			if ( ! preg_match( '#^(core|user)$#', $module_type ) ) {
+			if ( ! preg_match( '#^(core|site)$#', $module_type ) ) {
 				/**
-				 * Return an empty array if not core or user modules
+				 * Return an empty array if not core or site modules
 				 * @todo Add plugin and theme modules later
 				 */
 				self::$_modules[ $module_type ] = array();
@@ -108,8 +108,8 @@ class WP_Modules {
 					self::$_modules[ 'core' ] = self::_scan_modules( WP_MODULES_DIR );
 					break;
 
-				case 'user':
-					self::$_modules[ 'user' ] = self::_scan_modules( WP_CONTENT_DIR . '/modules' );
+				case 'site':
+					self::$_modules[ 'site' ] = self::_scan_modules( WP_CONTENT_DIR . '/modules' );
 					break;
 
 			}
@@ -137,7 +137,7 @@ class WP_Modules {
 	/**
 	 * Loads the active modules
 	 *
-	 * @param string $module_type Type of module: 'core' or 'user'
+	 * @param string $module_type Type of module: 'core' or 'site'
 	 */
 	static function load_modules( $module_type ) {
 
